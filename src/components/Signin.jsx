@@ -10,18 +10,30 @@ const Signin = () => {
 
         const form = e.target;
         const formData = new FormData(form);
-        const { email, password, ...userInfo } = Object.fromEntries(formData.entries())
+        const { email, password, ...restUserInfo } = Object.fromEntries(formData.entries())
 
-        console.log(email, password, userInfo);
+
+
+
+        console.log(email, password);
 
 
 
 
         //    firebase user create
 
-        createUser(email, password, userInfo)
-            .then((data) => {
-                console.log(data);
+        createUser(email, password)
+            .then((result) => {
+                console.log(result);
+
+
+                const userInfo = {
+                    email,
+                    ...restUserInfo,
+                    creationTime: result.user?.metadata?.creationTime,
+                    lastSigninTime: result.user?.metadata?.lastSignInTime
+                }
+
 
                 // login data post on server
 
