@@ -1,3 +1,4 @@
+import { deleteUser, getAuth } from 'firebase/auth';
 import React, { useState } from 'react';
 import { useLoaderData } from 'react-router';
 import Swal from 'sweetalert2';
@@ -12,6 +13,11 @@ const Users = () => {
     const handleDelete = (id) => {
         console.log('user id : ', id);
 
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+
+
 
 
 
@@ -25,7 +31,7 @@ const Users = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                  
+
 
                 // delete data  server to client fetch
 
@@ -38,16 +44,25 @@ const Users = () => {
                         if (data.deletedCount) {
 
                             // remainign data confirmations
-                            
+
                             const remainingData = users.filter(use => use._id !== id)
                             setUsers(remainingData)
+
+                            //    delete user from firebase 
+                            deleteUser(user).then(() => {
+
+                            }).catch((error) => {
+                                console.log(error.message);
+                            });
+
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            });
                         }
                     })
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
+
             }
         });
 
